@@ -3,40 +3,37 @@
 Phần mềm giao diện phân tích tín hiệu logic (Logic Analyzer) hiệu năng cao, được thiết kế chuyên biệt cho đồ án hệ thống nhúng với giao diện Dark Mode chuẩn kỹ thuật. 
 Logic Analyzer này có thể sử dụng kết hợp với bất kỳ vi điều khiển nào (như **Raspberry Pi Pico 2, STM32, Arduino, hay FPGA**), miễn là thiết bị có khả năng gửi dữ liệu qua cổng UART/Serial ảo.
 
+## Tải Ứng dụng ngay (Dành cho Windows) - Không cần cài đặt Code
+Nếu bạn muốn gửi phần mềm cho nhóm làm chung, hay lưu trữ để nộp BTL thì không cần cài Python để mở mã nguồn! Thiết kế kho mã nguồn được tự động đóng gói bằng **Github Actions**.
+
+1. Nhấp vào tab **[Actions]** hiển thị ngay trên danh sách các thư mục mã nguồn tại website GitHub này.
+2. Click chọn Workflow run có tích nút tick xanh ✅ trên cùng trên danh sách. 
+3. Trang thông tin bản build mở ra, bạn cuộn màn hình lăn tay xuống sát tận đáy đến khu vực **Artifacts**.
+4. Bấm click tải file nhãn mang tên **`LogicAnalyzer-Windows`**.
+5. Giải nén file Zip tải về, bạn sẽ có ngay một con app cực xịn tên `LogicAnalyzer.exe` chạy độc lập. Bấm chạy luôn lập tức!
+
+---
+
 ## Tính năng chính
-* **Hiển thị thời gian thực xé gió**: Sử dụng sức mạnh vẽ ma trận từ Numpy & `PyQtGraph` (hướng luồng đồ hoạ) để render hàng triệu điểm lấy mẫu mà không gặp tình trạng đứng hình máy như các phần mềm truyền thống.
-* **Hỗ trợ Đa Kênh Linh Hoạt**: Cung cấp cấu hình 2, 4, 8, 16, hoặc lên tới 24 kênh, dễ dàng đối ứng Topic 1 (chạy MCU bình thường) hoặc Topic 2 (FPGA tần số cao). Đầu ra đồ thị sẽ tự động trải dàn và phân luồng!
-* **Simulator Mock Device**: Gắn sẵn module giả lập tín hiệu ở cổng COM mang tên `MOCK (Simulator)`. Bạn có thể chạy ngay giao diện, bấm Capture để thấy sóng chạy thử mà chưa cần chạm tay vào làm mạch phần cứng!
-* **Trình phiên dịch luồng dữ liệu 2 chế độ**:
-   * **Text Format**: Phù hợp cho debug ban đầu, board gửi lên đơn giản như `"1,0,1,0\n"`.
-   * **Binary Format**: Chế độ Production tốc độ cao. Dồn trạng thái của 8 kênh GPIO vào 1 Byte nhị phân để bắn lên PC giúp bảo vệ băng thông UART siêu việt!
+* **Hiển thị thời gian thực xé gió**: Sử dụng sức mạnh vẽ ma trận từ Numpy & `PyQtGraph` (hướng luồng đồ hoạ) để render hàng triệu điểm lấy mẫu mà không gặp tình trạng đơ hình như thường thấy.
+* **Hỗ trợ Đa Kênh Linh Hoạt**: Cung cấp cấu hình tùy ý 2, 4, 8, 16, hoặc tăng lên chót vót tới 24 kênh. Chống lại Topic 1 (chạy vi xử lý thông thường) và Topic 2 (FPGA tần số cao). 
+* **Simulator Mock Device**: Gắn sẵn module giả lập luồng tín hiệu ở Menu cổng COM mang tên `MOCK (Simulator)`. Hãy bấm nút Capture xem hình ảnh dòng sóng chạy dập dềnh liên hồi mà chưa đòi trang bị mạch thực!
+* **Trình phiên dịch luồng tín hiệu 2 Định Dạng**:
+   * **Text Format**: Phù hợp cho gỡ lỗi, Board phát các xung như chuỗi serial `"1,0,1,0\n"`.
+   * **Binary Format**: Chế độ đẩy băng thông đỉnh. Ghép cọc trạng thái 8 Pin GPIO thành vỏn vẹn 1 Bytes duy nhất lao qua dây vật lý lên máy xử lý!
 
-## Cấu trúc Hệ thống
-1. `main.py`: Điểm neo chạy của chương trình và tích hợp giao diện GUI (PyQt6).
-2. `main_window.py`: Đóng gói logic đồ họa, thanh công cụ, các biểu đồ (pyqtgraph).
-3. `serial_worker.py`: Lớp luồng ngầm (QThread) sử dụng ngắt hệ đệm để giam dữ liệu từ `pyserial`, bảo vệ Thread chính khỏi treo.
-4. `data_parser.py`: Lõi phiên dịch frame dữ liệu thô sang các trạng thái logic 0 1 và nhóm nó vào Numpy Array.
-5. `mock_device.py`: Vi điều khiển giả lập ngẫu nhiên nhả sóng vuông.
-
-## Cài đặt Môi trường (Installation)
-Dự án được viết hoàn toàn trên ngôn ngữ Python.
-Yêu cầu: `Python 3.8+`
-
-Mở terminal và gõ các lệnh sau:
+## Dành cho Sinh Viên Mở Code (Phát triển cục bộ)
+Dự án được mã hóa trọn vẹn tại ngôn ngữ Python `(Python 3.8+)`.
+Tiến hành Clone Repo này với Terminal:
 ```bash
-# Ưu tiên tạo môi trường riêng
+# Tạo môi trường độc quyền
 python3 -m venv venv
-
-# Kích hoạt venv (Trường hợp bạn dùng Linux/MacOS)
 source venv/bin/activate
-# (Trường hợp bạn dùng Windows): venv\Scripts\activate.bat
+# (Dành cho Win mở với cmd gõ): venv\Scripts\activate.bat
 
-# Cài đặt thư viện cần thiết
+# Cài đặt nền tảng phụ thuộc
 pip install -r requirements.txt
-```
 
-## Chạy Ứng dụng (Run)
-Khi venv đang chạy ở terminal, khởi động phần mềm máy hiện sóng qua lệnh:
-```bash
+# Bấm máy Logic
 python main.py
 ```
