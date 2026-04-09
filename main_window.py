@@ -13,7 +13,7 @@ from mock_device import MockWorker
 class LogicAnalyzerWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("Python Logic Analyzer")
+        self.setWindowTitle("Logic Analyzer")
         self.resize(1000, 600)
 
         # Main Layout
